@@ -1,5 +1,6 @@
-
-import React from "react";
+import React, { useEffect } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 const developers = [
   {
@@ -32,11 +33,17 @@ const developers = [
 ];
 
 const About = () => {
+  useEffect(() => {
+    AOS.init({ duration: 800, once: true });
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-950 text-white py-10 px-6 relative">
       <div className="max-w-5xl mx-auto text-center">
-        <h1 className="text-4xl font-bold text-blue-400 mb-6">Meet the Developers</h1>
-        <p className="text-gray-400 mb-12 text-lg">
+        <h1 className="text-4xl font-bold text-blue-400 mb-6" data-aos="fade-up">
+          Meet the Developers
+        </h1>
+        <p className="text-gray-400 mb-12 text-lg" data-aos="fade-up" data-aos-delay="100">
           Built with 💙 during Walmart Sparkathon to simplify retail contract analysis.
         </p>
 
@@ -46,6 +53,8 @@ const About = () => {
             <div
               key={index}
               className="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-md text-center hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
+              data-aos="fade-up"
+              data-aos-delay={index * 100}
             >
               <img
                 src={dev.avatar}
@@ -73,7 +82,7 @@ const About = () => {
         </div>
 
         {/* Footer */}
-        <footer className="mt-20 text-gray-500 text-sm">
+        <footer className="mt-20 text-gray-500 text-sm" data-aos="fade-up" data-aos-delay="200">
           © {new Date().getFullYear()} Clausio by Team BrainFuse. All rights reserved.
         </footer>
       </div>
@@ -82,11 +91,14 @@ const About = () => {
       <a
         href="mailto:the.mayank.k.jha@gmail.com"
         className="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full shadow-lg text-sm z-50 transition-all duration-300 hover:scale-105"
+        data-aos="fade-up"
+        data-aos-delay="300"
       >
-      Connect with Us 💬 
+        Connect with Us 💬 
       </a>
     </div>
   );
 };
 
 export default About;
+

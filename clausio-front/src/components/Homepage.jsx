@@ -1,72 +1,124 @@
-import React from "react";
+
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
+import AOS from "aos";
+import "aos/dist/aos.css";
+import {
+  FileText,
+  ShieldAlert,
+  Bot,
+  Timer,
+  CheckCircle,
+  FileSearch,
+} from "lucide-react";
+
 
 const features = [
   {
-    title: "Clause-by-Clause Summary",
-    description: "Get a breakdown of important contract terms instantly.",
-    icon: "📑",
+    icon: <FileText className="h-8 w-8 text-blue-400" />,
+    title: "Clause Detection",
+    desc: "Extract key clauses in seconds.",
   },
   {
-    title: "Risk Detection",
-    description: "Identify clauses that may be risky or unfavorable.",
-    icon: "⚠️",
+    icon: <ShieldAlert className="h-8 w-8 text-red-400" />,
+    title: "Risk Flagging",
+    desc: "Highlight risky or ambiguous terms.",
   },
   {
-    title: "Ask Wally Bot",
-    description: "Get intelligent explanations and recommendations.",
-    icon: "🤖",
+    icon: <Bot className="h-8 w-8 text-purple-400" />,
+    title: "Ask Wally",
+    desc: "Smart chatbot for contract Q&A.",
   },
   {
-    title: "Secure & Fast",
-    description: "Your files stay private and are summarized quickly.",
-    icon: "🔒",
+    icon: <Timer className="h-8 w-8 text-yellow-400" />,
+    title: "Instant Summary",
+    desc: "Generate summaries in less than 10 seconds.",
+  },
+  {
+    icon: <CheckCircle className="h-8 w-8 text-green-400" />,
+    title: "Clause Validation",
+    desc: "Verify clause compliance with industry standards.",
+  },
+  {
+    icon: <FileSearch className="h-8 w-8 text-pink-400" />,
+    title: "Smart Search",
+    desc: "Find specific clauses using natural language.",
   },
 ];
 
 const Homepage = () => {
+  useEffect(() => {
+    AOS.init({ duration: 800, once: true });
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gray-950 text-white px-6 py-10">
-      {/* Hero Section */}
-      <div className="text-center max-w-4xl mx-auto">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-blue-400">
-          Clausio — AI-Powered Contract Intelligence
+    <div className="relative min-h-screen w-full overflow-hidden text-white">
+      {/* Background Image with Blur */}
+      <div
+        className="absolute inset-0 bg-cover bg-center z-0"
+        style={{ backgroundImage: `url('/bgg.jpg')` }}
+      >
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-10"></div>
+      </div>
+
+      {/* Foreground Content */}
+      <div className="relative z-20 flex flex-col items-center justify-center min-h-screen px-6 py-16 text-center">
+        <h1
+          className="text-4xl sm:text-6xl font-extrabold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent mb-4"
+          data-aos="fade-up"
+        >
+          Simplify Contract Analysis with Clausio
         </h1>
-        <p className="text-gray-300 text-lg mb-8">
-          Upload your contract. Get instant summaries, risk detection, and smart insights — all clause by clause.
+        <p
+          className="text-gray-300 text-lg sm:text-xl mb-8"
+          data-aos="fade-up"
+          data-aos-delay="100"
+        >
+          Clausio helps you summarize, understand, and assess legal documents in seconds.
         </p>
-        <Link to="/analyze">
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all">
-            Get Started
-          </button>
-        </Link>
-      </div>
+             
+{/* Rectangular Buttons with Rounded Corners */}
+<div
+  className="flex flex-col sm:flex-row gap-4 items-center justify-center mt-4"
+  data-aos="fade-up"
+  data-aos-delay="200"
+>
+  <Link
+    to="/analyze"
+    className="px-6 py-3 sm:px-8 sm:py-4 bg-blue-600 hover:bg-blue-700 text-white text-sm sm:text-base font-semibold rounded-lg shadow-lg transition-transform transform hover:scale-105"
+  >
+    🚀 Get Started with AI
+  </Link>
 
-      {/* Feature Cards with Hover Effects */}
-      <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-        {features.map((f, idx) => (
-          <div
-            key={idx}
-            className="bg-white/5 border border-white/10 rounded-xl p-6 text-left transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:border-blue-500 hover:bg-gradient-to-br from-gray-800/30 to-blue-800/10 group cursor-pointer"
-          >
-            <div className="text-3xl mb-2 group-hover:animate-bounce">{f.icon}</div>
-            <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-blue-400 transition-colors">
-              {f.title}
-            </h3>
-            <p className="text-sm text-gray-300 group-hover:text-gray-200 transition-colors">
-              {f.description}
-            </p>
-          </div>
-        ))}
-      </div>
+  <Link
+    to="/signup"
+    className="px-6 py-3 sm:px-8 sm:py-4 border border-white/20 hover:border-blue-500 text-white text-sm sm:text-base font-semibold rounded-lg shadow-lg transition-transform transform hover:scale-105"
+  >
+    ✨ Start for Free
+  </Link>
+</div>
 
-      {/* Footer */}
-      <footer className="mt-20 text-center text-gray-500 text-sm">
-        © {new Date().getFullYear()} Clausio By Team BrainFuse. Built at Walmart Sparkathon.
-      </footer>
+
+        {/* Feature Cards */}
+        <div className="mt-16 w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+          {features.map(({ icon, title, desc }, i) => (
+            <div
+              key={i}
+              className="group bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 flex flex-col items-center text-center transition-all duration-300 ease-in-out transform hover:scale-105 hover:border-blue-500 hover:shadow-xl"
+              data-aos="fade-up"
+              data-aos-delay={i * 100}
+            >
+              <div className="mb-4">{icon}</div>
+              <h3 className="text-xl font-semibold text-white mb-2 group-hover:text-blue-400 transition">
+                {title}
+              </h3>
+              <p className="text-gray-300">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
 
 export default Homepage;
-
