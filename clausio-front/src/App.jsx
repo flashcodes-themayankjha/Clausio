@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import './App.css';
 import Chatbot from './components/Chatbot';
 import Navbar from "./components/Navbar";
-
+import { getClauseIcon } from "./utils/clauseIcons";
 
 function App() {
   const [file, setFile] = useState(null);
@@ -11,6 +11,9 @@ function App() {
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef(null);
   const [chatOpen, setChatOpen] = useState(false);
+  const [expandedCards, setExpandedCards] = useState([]);
+  const [riskFlags, setRiskFlags] = useState([]);
+  const [pendingQuestion, setPendingQuestion] = useState("");
 
   const mockSummary = `
 🔹 Payment Terms: Net 30 days.
@@ -42,12 +45,29 @@ function App() {
     fileInputRef.current.click();
   };
 
-  return (
-    <div className="min-h-screen bg-gray-950 text-white">
-      {/* Navbar */}
-       <Navbar />
+  const toggleExpand = (idx) => {
+    setExpandedCards((prev) =>
+      prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]
+    );
+  };
 
-      {/* Main Section */}
+  const toggleRisk = (idx) => {
+    setRiskFlags((prev) =>
+      prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]
+    );
+  };
+
+  const askWally = (clauseText) => {
+    setChatOpen(true);
+    setTimeout(() => {
+      setPendingQuestion(`Can you explain this clause: "${clauseText}"?`);
+    }, 100); // slight delay to allow chatbot to mount
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-950 text-white relative">
+      <Navbar />
+
       <div className="flex flex-col items-center justify-center px-4 py-10">
         {/* Upload Box */}
         <div
@@ -100,54 +120,121 @@ function App() {
         {/* Summary Display as Cards */}
         {summary && (
           <div id="summary" className="mt-6 w-full max-w-xl text-left">
-            <h2 className="text-blue-400 text-sm font-bold mb-2">Summary:</h2>
+            <h2 className="text-blue-400 text-sm font-bold mb-4">Summary:</h2>
             <div className="grid gap-4">
               {summary
                 .trim()
                 .split("🔹")
                 .filter(Boolean)
-                .map((clause, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-gray-900 p-4 rounded-lg shadow-md border border-gray-700"
-                  >
-                    <h3 className="font-semibold text-white text-sm mb-1">
-                      {clause.split(":")[0].trim()}
-                    </h3>
-                    <p className="text-gray-300 text-sm">
-                      {clause.split(":").slice(1).join(":").trim()}
-                    </p>
-                  </div>
-                ))}
+                .map((clause, idx) => {
+                  const [title, ...rest] = clause.split(":");
+                  const icon = getClauseIcon(title);
+                  const value = rest.join(":").trim();
+                  const isExpanded = expandedCards.includes(idx);
+                  const isRisky = riskFlags.includes(idx);
+
+                  return (
+                    <div
+                      key={idx}
+                      className={`bg-white/5 backdrop-blur-md border ${
+                        isRisky ? "border-red-400" : "border-white/10"
+                      } rounded-xl p-4 shadow-sm hover:shadow-lg transition cursor-pointer`}
+                      onClick={() => toggleExpand(idx)}
+                    >
+                      <h3 className="flex items-center gap-2 text-sm font-semibold text-white mb-1">
+                        <span className="text-xl">{icon}</span>
+                        {title.trim()}
+                        {isRisky && (
+                          <span className="text-red-400 text-xs ml-2">
+                            ⚠️ Risk
+                          </span>
+                        )}
+                      </h3>
+
+                      {isExpanded ? (
+                        <>
+                          <p className="text-sm text-gray-300">{value}</p>
+
+                          <div className="flex gap-4 mt-3">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                askWally(value);
+                              }}
+                              className="text-xs bg-blue-700 hover:bg-blue-800 text-white px-3 py-1 rounded"
+                            >
+                              Ask Wally
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleRisk(idx);
+                              }}
+                              className={`text-xs px-3 py-1 rounded ${
+                                isRisky
+                                  ? "bg-red-600 hover:bg-red-700 text-white"
+                                  : "bg-gray-700 hover:bg-gray-800 text-white"
+                              }`}
+                            >
+                              {isRisky ? "Unmark Risk" : "Mark as Risk"}
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        <p className="text-xs text-gray-500 italic">
+                          Click to expand
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
             </div>
+
+            {/* 🔴 Risk Warning if more than 2 risky clauses */}
+            {riskFlags.length > 2 && (
+              <div className="mt-4 bg-red-900/50 border border-red-400 text-red-300 px-4 py-3 rounded-lg shadow text-sm">
+                ⚠️ <strong>Contract Status:</strong>{" "}
+                <span className="text-white font-semibold">Not Recommended</span>{" "}
+                — Too many high-risk clauses detected.
+              </div>
+            )}
           </div>
         )}
       </div>
-           {/* Chat Bubble Button */}
-<button
-  onClick={() => setChatOpen(!chatOpen)}
-  className="fixed bottom-6 right-6 z-50 p-4 bg-gradient-to-br from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 rounded-full shadow-xl hover:scale-105 transition-all duration-300 focus:outline-none"
-  title="Chat with Clausio"
->
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-6 w-6 text-white"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth={2}
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8-1.577 0-3.05-.368-4.29-1.01L3 21l1.334-3.447C3.489 16.53 3 14.823 3 13c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-    />
-  </svg>
-</button>
 
-{/* Chatbot Component */}
-{chatOpen && <Chatbot onClose={() => setChatOpen(false)} />}
-   </div>
+      {/* Chat Bubble */}
+      <button
+        onClick={() => setChatOpen(!chatOpen)}
+        className="fixed bottom-6 right-6 z-50 p-4 bg-gradient-to-br from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 rounded-full shadow-xl hover:scale-105 transition-all duration-300 focus:outline-none"
+        title="Chat with Clausio"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6 text-white"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8-1.577 0-3.05-.368-4.29-1.01L3 21l1.334-3.447C3.489 16.53 3 14.823 3 13c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+          />
+        </svg>
+      </button>
+
+      {/* Chatbot */}
+      {chatOpen && (
+        <Chatbot
+          onClose={() => {
+            setChatOpen(false);
+            setPendingQuestion("");
+          }}
+          question={pendingQuestion}
+        />
+      )}
+    </div>
   );
 }
 
