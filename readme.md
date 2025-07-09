@@ -19,8 +19,8 @@ This significantly reduces onboarding time, legal oversight, and manual review a
 
 ---
 
-## 🖼️ Demo Preview (Coming Soon)
-> UI screenshots, summary examples, and clause highlighting will be added here.
+## 🖼️ Demo Preview 
+<img width="1710" alt="image" src="https://github.com/user-attachments/assets/61ad2c9e-247e-4244-8fee-cba234659987" />
 
 ---
 
@@ -38,23 +38,6 @@ This significantly reduces onboarding time, legal oversight, and manual review a
 
 ## 📁 Project Structure
 
-```bash
-contract-summarizer/
-├── backend/
-│   ├── main.py                  # FastAPI app
-│   ├── routers/                 # Contract API endpoints
-│   ├── services/                # Summarization & clause extraction logic
-│   ├── utils/                   # File parsing logic
-│   ├── models/                  # Data models (e.g., Contract)
-│   ├── .env.example             # Example API key env
-│   └── requirements.txt
-├── frontend/
-│   ├── src/
-│   │   ├── pages/               # Home/Upload pages
-│   │   ├── components/          # UI Components
-│   │   ├── api/                 # API calls
-│   └── tailwind.config.js
-├── .gitignore
-├── README.md
-└── LICENSE
+<img width="493" alt="image" src="https://github.com/user-attachments/assets/d591cd51-dfbc-41e4-a79b-78ae436bc329" />
+
 
