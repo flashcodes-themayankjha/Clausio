@@ -1,4 +1,4 @@
-# 🤖 Contract Summarizer – Walmart Sparkathon 2025
+# 🤖 Clausio: Contract Summarizer – Walmart Sparkathon 2025
 > By Team BrainFuze
 
 An AI-powered contract summarization and clause extraction tool tailored for retail supply chains. This project is built for the **Walmart Sparkathon 2025**, under the theme:
