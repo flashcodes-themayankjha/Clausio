@@ -5,21 +5,22 @@ export default function Navbar() {
     <nav className="bg-gray-900 px-6 py-4 flex justify-between items-center shadow-sm">
       {/* Logo */}
       <div className="text-xl font-bold text-blue-500 tracking-wide">
-        Clausio
+      <a href="/">  Clausio </a>
       </div>
 
       {/* Nav Items */}
       <div className="space-x-6 hidden sm:flex text-sm text-gray-300">
-        <a href="#" className="hover:text-white transition">
+        <a href="/" className="hover:text-white transition">
           Home
         </a>
-        <a href="#upload" className="hover:text-white transition">
+        <a href="/analyze" className="hover:text-white transition">
           Upload
         </a>
-        <a href="#summary" className="hover:text-white transition">
-          Summary
+        <a href="/About" className="hover:text-white transition">
+          About us
         </a>
-      </div>
+       
+            </div>
     </nav>
   );
 }

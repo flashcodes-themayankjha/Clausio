@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from "react";
 import Chatbot from './Chatbot';
 import { getClauseIcon } from "../utils/clauseIcons";
@@ -65,10 +66,11 @@ function Analyzer() {
   return (
     <div className="min-h-screen bg-gray-950 text-white relative px-4 py-10">
       <div className="flex flex-col items-center justify-center">
+
         {/* Upload Box */}
         <div
           id="upload"
-          className={`w-full max-w-xl border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition ${
+          className={`w-full max-w-xl h-60 flex flex-col justify-center items-center border-2 border-dashed rounded-xl text-center cursor-pointer transition ${
             dragOver ? "border-blue-500 bg-gray-800" : "border-gray-600"
           }`}
           onClick={handleFileClick}
@@ -86,10 +88,28 @@ function Analyzer() {
             onChange={(e) => setFile(e.target.files?.[0] || null)}
             className="hidden"
           />
+
+          {/* Cloud Icon */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-12 w-12 text-blue-400 mb-3"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M7 16h10M12 12v8m0 0l-3-3m3 3l3-3m0-8a5 5 0 00-9.9-1.25M15 7a3 3 0 013 3c0 1.27-.43 2.44-1.14 3.38"
+            />
+          </svg>
+
           <p className="text-sm text-gray-400">
             Drag & Drop a contract here, or{" "}
             <span className="text-blue-400 underline">click to upload</span>
           </p>
+
           {file && (
             <p className="mt-2 text-xs text-gray-300">
               Selected File: <span className="text-white">{file.name}</span>
@@ -234,4 +254,3 @@ function Analyzer() {
 }
 
 export default Analyzer;
-
