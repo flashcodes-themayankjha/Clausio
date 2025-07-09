@@ -21,6 +21,18 @@ function Analyzer() {
 🔹 Penalties: 5% per week late.
 🔹 Liability: Limited to contract value.
 `;
+  const handleUpload = async () => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await fetch("http://localhost:8000/contract/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await response.json();
+    setSummary(data.content);
+  };
 
   const handleSummarize = () => {
     if (!file) return;
@@ -70,9 +82,8 @@ function Analyzer() {
         {/* Upload Box */}
         <div
           id="upload"
-          className={`w-full max-w-xl h-60 flex flex-col justify-center items-center border-2 border-dashed rounded-xl text-center cursor-pointer transition ${
-            dragOver ? "border-blue-500 bg-gray-800" : "border-gray-600"
-          }`}
+          className={`w-full max-w-xl h-60 flex flex-col justify-center items-center border-2 border-dashed rounded-xl text-center cursor-pointer transition ${dragOver ? "border-blue-500 bg-gray-800" : "border-gray-600"
+            }`}
           onClick={handleFileClick}
           onDragOver={(e) => {
             e.preventDefault();
@@ -152,9 +163,8 @@ function Analyzer() {
                   return (
                     <div
                       key={idx}
-                      className={`bg-white/5 backdrop-blur-md border ${
-                        isRisky ? "border-red-400" : "border-white/10"
-                      } rounded-xl p-4 shadow-sm hover:shadow-lg transition cursor-pointer`}
+                      className={`bg-white/5 backdrop-blur-md border ${isRisky ? "border-red-400" : "border-white/10"
+                        } rounded-xl p-4 shadow-sm hover:shadow-lg transition cursor-pointer`}
                       onClick={() => toggleExpand(idx)}
                     >
                       <h3 className="flex items-center gap-2 text-sm font-semibold text-white mb-1">
@@ -185,11 +195,10 @@ function Analyzer() {
                                 e.stopPropagation();
                                 toggleRisk(idx);
                               }}
-                              className={`text-xs px-3 py-1 rounded ${
-                                isRisky
+                              className={`text-xs px-3 py-1 rounded ${isRisky
                                   ? "bg-red-600 hover:bg-red-700"
                                   : "bg-gray-700 hover:bg-gray-800"
-                              }`}
+                                }`}
                             >
                               {isRisky ? "Unmark Risk" : "Mark as Risk"}
                             </button>

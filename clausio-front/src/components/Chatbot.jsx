@@ -1,5 +1,20 @@
 
 import React, { useState, useEffect } from "react";
+const sendMessage = async () => {
+  const response = await fetch("http://localhost:8000/contract/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt: question }),
+  });
+
+  const data = await response.json();
+  setMessages([
+    ...messages,
+    { role: "user", content: question },
+    { role: "bot", content: data.response },
+  ]);
+};
+
 
 const Chatbot = ({ onClose, question }) => {
   const [messages, setMessages] = useState([
@@ -35,9 +50,8 @@ const Chatbot = ({ onClose, question }) => {
         {messages.map((msg, idx) => (
           <div key={idx} className={`text-${msg.role === "user" ? "right" : "left"}`}>
             <div
-              className={`inline-block px-3 py-2 rounded-md ${
-                msg.role === "user" ? "bg-blue-700" : "bg-gray-700"
-              }`}
+              className={`inline-block px-3 py-2 rounded-md ${msg.role === "user" ? "bg-blue-700" : "bg-gray-700"
+                }`}
             >
               {msg.content}
             </div>
