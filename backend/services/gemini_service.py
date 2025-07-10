@@ -1,3 +1,4 @@
+
 import os
 import google.generativeai as genai
 from dotenv import load_dotenv
@@ -8,9 +9,10 @@ genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 model = genai.GenerativeModel("gemini-1.5-flash")
 
+
 def extract_clauses_from_text(text: str) -> str:
     prompt = f"""
-Extract the following clauses from this contract:
+You are a legal assistant. Extract the following clauses from the contract:
 
 1. Payment Terms
 2. Delivery Timeline
@@ -18,17 +20,17 @@ Extract the following clauses from this contract:
 4. Penalties
 5. Liability
 
-Respond ONLY in this JSON format:
+Respond ONLY in this **valid JSON format**:
 
 {{
-  "Payment Terms": "text",
-  "Delivery Timeline": "text",
-  "SLA": "text",
-  "Penalties": "text",
-  "Liability": "text"
+  "Payment Terms": "...",
+  "Delivery Timeline": "...",
+  "SLA": "...",
+  "Penalties": "...",
+  "Liability": "..."
 }}
 
-Do not include markdown or explanations. JSON only.
+NO markdown, NO commentary, NO extra text — return valid JSON only.
 
 Contract:
 \"\"\"
@@ -36,24 +38,33 @@ Contract:
 \"\"\"
 """
 
-    response = model.generate_content(prompt)
-    result_text = response.text.strip()
-
-    # Strip out markdown formatting if any
-    if result_text.startswith("```json"):
-        result_text = result_text.replace("```json", "").replace("```", "").strip()
-
     try:
+        response = model.generate_content(prompt)
+        parts = response.candidates[0].content.parts
+
+        if len(parts) == 0 or not hasattr(parts[0], "text"):
+            raise ValueError("Gemini response missing expected text.")
+
+        result_text = parts[0].text.strip()
+
+        # Clean markdown wrapping if present
+        if result_text.startswith("```json"):
+            result_text = result_text.replace("```json", "").replace("```", "").strip()
+
+        print("📦 Gemini Raw Response:\n", result_text)
+
         parsed = json.loads(result_text)
-        # Optional: Check all keys are present
+
+        # Validate all expected keys are present
         expected_keys = {"Payment Terms", "Delivery Timeline", "SLA", "Penalties", "Liability"}
         if not expected_keys.issubset(parsed.keys()):
-            raise ValueError("Missing one or more required keys")
+            raise ValueError("Missing one or more required keys in Gemini output.")
 
         return json.dumps(parsed, indent=2)
 
     except Exception as e:
-        print("DEBUG: Raw Gemini output:\n", result_text)
+        print("❌ Gemini clause extraction failed:", e)
+        print("🪵 Raw response (if any):", locals().get("result_text", "N/A"))
         return json.dumps({"error": "Invalid clause format returned by LLM"})
 
 
@@ -73,5 +84,16 @@ Context:
 User Question:
 {message}
 """
-    response = model.generate_content(prompt)
-    return response.text
+
+    try:
+        response = model.generate_content(prompt)
+        parts = response.candidates[0].content.parts
+
+        if len(parts) == 0 or not hasattr(parts[0], "text"):
+            raise ValueError("No valid Gemini response text found.")
+
+        return parts[0].text.strip()
+
+    except Exception as e:
+        print("❌ Gemini chat response failed:", e)
+        return "Sorry, something went wrong while generating the response."

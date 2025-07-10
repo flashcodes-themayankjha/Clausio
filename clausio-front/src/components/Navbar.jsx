@@ -11,9 +11,14 @@ const Navbar = () => {
     <nav className="bg-gray-950 text-white px-6 py-4 shadow-md">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         {/* Logo */}
-        <Link to="/" className="text-2xl font-bold text-blue-400" onClick={closeMenu}>
-          Clausio
-        </Link>
+        <Link
+  to="/"
+  className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent"
+  onClick={closeMenu}
+>
+  Clausio.ai
+</Link>
+
 
         {/* Hamburger Icon */}
         <button

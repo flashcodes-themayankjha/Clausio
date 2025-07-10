@@ -13,3 +13,10 @@ app.add_middleware(
 )
 
 app.include_router(contract.router, prefix="/contract")
+
+
+app.include_router(contract.router)
+
+@app.get("/")
+def root():
+    return {"status": "API is running", "endpoints": ["/upload", "/chat"]}

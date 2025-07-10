@@ -1,3 +1,4 @@
+
 from fastapi import APIRouter, File, UploadFile
 from pydantic import BaseModel
 from services.gemini_service import chat_with_contract, extract_clauses_from_text
